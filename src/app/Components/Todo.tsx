@@ -1,50 +1,61 @@
-'use client'
-import { DeleteFilled, EditFilled } from '@ant-design/icons'
-import React from 'react'
+"use client";
+import { DeleteFilled, EditFilled } from "@ant-design/icons";
+import React from "react";
+import Delete from "../imgs/delete.png";
+import Image from "next/image";
 
 export const Todo = () => {
-    const [task, setTask] = React.useState<any>('')
-    const [taskList, setTaskList] = React.useState<any[]>([])
+  const [task, setTask] = React.useState<any>("");
+  const [taskList, setTaskList] = React.useState<any[]>([]);
 
-    const addTask = () => {
-        setTaskList([...taskList, task]);
-        setTask("");
-    }
-    const deleteTask = (taskIndex: number) => {
-        setTaskList(prevTasks => prevTasks.filter((task, index) => index !== taskIndex));
-    }
-    return (
-        <div className='w-screen h-screen'>
-            <div className='flex justify-center mt-5 text-[40px] font-sans font-bold'>
-                ToDo
-            </div>
-            <div className='h-full w-full flex justify-center'>
-                <div className='flex justify-center mt-5 bg-white shadow-2xl rounded-3xl border-2 h-[70%] w-[30%]'>
-                    <div className='w-[100%] h-[100%]'>
-                        <div className='flex justify-center mt-5 gap-3 h-[8%] w-[100%]'>
-                            <input type='text' className='border-2 rounded-xl border-black w-[80%] p-2' placeholder='Enter Task' onChange={(e: any) => { setTask(e.target.value) }} value={task} />
-                            <div className='flex justify-center '>
-                                <button className='bg-black text-white rounded-xl p-2 h-full w-10' onClick={addTask}>+</button>
-                            </div>
-                        </div>
-                        <div className='mt-10 w-[100%] h-[100%]'>
-                            {taskList.map((task: any, index:number) => (
-                                                <div key={index} className='flex justify-center w-[100%] h-[100%]'>
-                                                    <div className='bg-white w-[95%] h-[12%] rounded-2xl border-2 shadow-xl overflow-hidden overflow-x-scroll'>
-                                                        <div className='p-4 flex gap-5'>
-                                                            {task}
-                                                            <div className='flex justify-end w-full gap-3'>
-                                                                <EditFilled style={{ fontSize: "24px", cursor: "pointer" }} />
-                                                                <DeleteFilled style={{ fontSize: "24px", cursor: "pointer" }} onClick={() => deleteTask(index)} />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-            </div>
+  const addTask = () => {
+    setTaskList([...taskList, { id: taskList.length + 1, task: task }]);
+    setTask("");
+  };
+  const deleteTask = (taskIndex: number) => {
+    const filteredTasks = taskList.filter(({ id }) => id !== taskIndex);
+    setTaskList(filteredTasks);
+  };
+  return (
+    <main className="w-full h-full grid justify-center items-center p-[5%]">
+      <h1 className="text-center text-3xl font-bold py-2">TODO 📋</h1>
+      <div className="w-[35rem] h-[45rem] p-5 border rounded-lg bg-white shadow-xl">
+        <div className="flex justify-center space-x-2 rounded-2xl ">
+          <input
+            type="text"
+            className="w-[90%] h-full border border-black p-5 rounded-2xl"
+            onChange={(e: any) => {
+              setTask(e.target.value);
+            }}
+            value={task}
+          />
+          <button
+            className="w-[10%] p-3 bg-black text-white border rounded-xl"
+            onClick={addTask}
+          >
+            +
+          </button>
         </div>
-    )
-}
+        <section className="border   rounded-lg p-5 w-full h-[35rem] mt-[8%] relative overflow-scroll">
+          {/* <div className=""> */}
+            {taskList.map(({ task, id }) => (
+              <div
+                key={id}
+                className="flex justify-between p-2 border rounded-lg w-[29rem] h-[5rem] mt-1 border-black "
+              >
+                <p className="py-5 pl-2 text-black">{task}</p>
+                <div className="flex space-x-2">
+                  <EditFilled style={{ fontSize: "24px", cursor: "pointer" }} />
+                  <DeleteFilled
+                    style={{ fontSize: "24px", cursor: "pointer" }}
+                    onClick={() => deleteTask(id)}
+                  />
+                </div>
+              </div>
+            ))}
+          {/* </div> */}
+        </section>
+      </div>
+    </main>
+  );
+};
