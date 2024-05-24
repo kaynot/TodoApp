@@ -3,8 +3,8 @@ import { Todo } from "./Components/Todo";
 
 export default function Home() {
   return (
-    <main className="min-h-screen w-screen font-sans ">
-  <Todo/>
+    <main className="h-screen w-screen font-sans bg-slate-100 ">
+      <Todo />
     </main>
   );
 }
