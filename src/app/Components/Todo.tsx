@@ -7,6 +7,10 @@ import Image from "next/image";
 import { ModalTemplate } from "./Modal";
 import { title } from "process";
 import { message } from "antd";
+import img1 from '../imgs/img1.png'
+import img2 from '../imgs/img2.png'
+
+
 
 export const Todo = () => {
   const [task, setTask] = React.useState<any>("");
@@ -74,8 +78,10 @@ export const Todo = () => {
           setIsModalOpen(false);
         }}
       />
-      <main className="w-full h-full grid justify-center items-center p-[5%]">
-        <h1 className="text-center text-3xl font-bold py-2">TODO 📋</h1>
+      <main className="w-full h-full grid justify-center items-center relative p-[5%] ">
+      <Image src={img1} alt="delete.png" className="w-[15%] ml-[42%] absolute" />
+      <Image src={img2} alt="delete.png" className="w-[20%] ml-[10%] absolute" />
+        <h1 className="text-center font-mono text-3xl font-bold py-2">TODO 📋</h1>
         <div className="w-[35rem] h-[45rem] p-5 border rounded-lg bg-white shadow-xl">
           <div className="flex justify-center space-x-2 rounded-2xl ">
             <input
@@ -95,12 +101,12 @@ export const Todo = () => {
             </button>
             </Tooltip>
           </div>
-          <section className="border   rounded-lg p-5 w-full h-[35rem] mt-[8%] relative overflow-scroll">
+          <section className="border   rounded-lg p-5 w-full h-[35rem] mt-[8%] relative overflow-scroll overflow-x-hidden">
             {/* <div className=""> */}
             {taskList.map(({ task, id }) => (
               <div
                 key={id}
-                className="flex justify-between p-2 border rounded-lg w-[29rem] h-[5rem] mt-1 border-black "
+                className="flex justify-between p-2 border rounded-lg w-[29rem] h-[5rem] mt-1 border-black overflow-auto "
               >
                 <p className="py-5 pl-2 text-black">{task}</p>
                 <div className="flex space-x-2">
