@@ -1,24 +1,19 @@
 "use client";
 import {
-  CalendarFilled,
   CheckCircleFilled,
   ClockCircleFilled,
+  CloseCircleFilled,
   DeleteFilled,
   EditFilled,
-  HourglassFilled,
   SaveFilled,
 } from "@ant-design/icons";
-import { Tooltip } from "antd";
-import React, { useState } from "react";
-import Delete from "../imgs/delete.png";
+import { DatePicker, Tooltip } from "antd";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { ModalTemplate } from "./Modal";
-import { title } from "process";
-import { message } from "antd";
 import img1 from "../imgs/img1.png";
-import img2 from "../imgs/img2.png";
-import { DatePicker } from "antd";
-import { Checkbox } from "antd";
+import dayjs from "dayjs";
+// import img2 from "../imgs/img2.png";
 
 export const Todo = () => {
   const [task, setTask] = useState<any>(""); // task state
@@ -27,6 +22,7 @@ export const Todo = () => {
   const [isDatePickerVisible, setDatePickerVisible] = useState(false); // date picker state
   const [editMode, setEditMode] = useState<boolean>(false);
   const [editTask, setEditTask] = useState<string>(task);
+  const [selectedDate, setSelectedDate] = useState();//date value
 
   const addTask = () => {
     // add task to the list
@@ -72,17 +68,23 @@ export const Todo = () => {
       addTask();
     }
   };
-  //   const handleDone = (id: number) => {
-  //     setTaskList(
-  //       taskList.map((task) => {
-  //         if (task.id === id) {
-  //           return { ...task, isDone: !task.isDone };
-  //         } else {
-  //           return task;
-  //         }
-  //       })
-  //     );
-  //   };
+  const [check, setCheck] = useState<boolean>(false);
+  useEffect(() => {
+    taskList.map((task: any) => ({ ...task, isDone: false }));
+  }, []);
+  console.log("tasklist", taskList);
+  const handleDone = (id: number) => {
+    setTaskList(
+      taskList.map((task) => {
+        if (task.id === id) {
+          return { ...task, isDone: !task.isDone };
+        } else {
+          return task;
+        }
+      })
+    );
+  };
+
   //   const handleCheck = (e: any) => {};
 
   return (
@@ -105,21 +107,21 @@ export const Todo = () => {
           setIsModalOpen(false);
         }}
       />
-      <main className="w-full h-full grid justify-center items-center relative p-[5%] bg-yellow-img ">
-        {/* <Image
+      <main className="w-full h-full grid justify-center items-center relative p-[5%] ">
+        <Image
           src={img1}
           alt="delete.png"
           className="w-[15%] ml-[42%] absolute"
-        /> */}
-        <Image
+        />
+        {/* <Image
           src={img2}
           alt="delete.png"
           className="w-[20%] ml-[10%] absolute"
-        />
+        /> */}
         <h1 className="text-center font-mono text-3xl font-bold py-2">
           TODO 📋
         </h1>
-        <div className="w-[35rem] h-[45rem] p-5 border rounded-lg  bg-white shadow-xl">
+        <div className="w-[35rem] h-[45rem] p-5 border rounded-lg  bg-blue-400 shadow-xl ">
           <div className="flex justify-center space-x-2 rounded-2xl ">
             <input
               type="text"
@@ -136,42 +138,61 @@ export const Todo = () => {
               style={{ fontFamily: "sans-serif" }}
             >
               <button
-                className="w-[10%] p-3 bg-black text-white border rounded-xl"
+                className="w-[10%] p-3 bg-black text-black text-[25px] border rounded-xl bg-yellow-img "
                 onClick={validateTask}
               >
                 +
               </button>
             </Tooltip>
           </div>
-          <section className="border   rounded-lg p-5 w-full h-[35rem] mt-[8%] relative overflow-scroll overflow-x-hidden">
+          <section className="border   rounded-lg p-5 w-full h-[35rem] mt-[8%] relative overflow-scroll overflow-x-hidden ">
             {/* <div className=""> */}
-            {taskList.map(({ task, id }) => (
+            {taskList.map(({ task, id, isDone }) => (
               <div
                 key={id}
-                className="flex justify-between p-2 border rounded-lg w-[29rem] h-[5rem] mt-1 border-black overflow-auto bg-yellow-img"
+                className="flex justify-between p-2 border rounded-lg w-[29rem] min-h-[5rem] mt-1 border-black  bg-yellow-img gap-2"
               >
-                <Tooltip title="Check to complete " color={"black"}>
-                  <Checkbox
+                {!check ? (
+                  <Tooltip title="Check to complete " color={"black"}>
+                    <CheckCircleFilled
+                      onClick={() => {
+                        setCheck(!check);
+                        handleDone(id);
+                      }}
+                    />
+                  </Tooltip>
+                ) : (
+                  <Tooltip title="Check to cancel" color={"red"}>
+                    <CloseCircleFilled
+                      onClick={() => setCheck(!check)}
+                      style={{ color: "red" }}
+                    />
+                  </Tooltip>
+                )}
+
+                {/* <Checkbox
                     onChange={(e) =>
                       e.target.checked
                         ? setLinethrough("line-through")
                         : setLinethrough("")
                     }
                     className="border-2 w-[25px] p-[2px] h-[25px] rounded-lg cursor-pointer border-black"
-                  />
-                  {/* <input type="checkbox" className="w-[15px] rounded-lg cursor-pointer "  onClick={()=> handleDone(id)} checked={task.isDone}/> */}
-                </Tooltip>
+                  /> */}
+                {/* <input type="checkbox" className="w-[15px] rounded-lg cursor-pointer "  onClick={()=> handleDone(id)} checked={task.isDone}/> */}
+                {/* </Tooltip> */}
                 {editMode ? (
                   <input
+                    defaultValue={task}
                     type="text"
-                    className="border border-black  rounded-lg w-[70%] p-2"
-                    value={editTask}
+                    className="border border-black  rounded-lg w-[70%] p-2 "
                     onChange={(e) => setEditTask(e.target.value)}
                   />
-                ) : linethrough ? (
-                  <s className="py-5 pl-2 text-black">{task}</s>
+                ) : taskList[0].isDone ? (
+                  <s className="py-5 pl-2 text-black break-words w-[60%] ">
+                    {task}
+                  </s>
                 ) : (
-                  <p className={"py-5 pl-2 text-black " + linethrough}>
+                  <p className={"py-5 pl-2 text-black break-words w-[60%]"}>
                     {task}
                   </p>
                 )}
@@ -179,14 +200,22 @@ export const Todo = () => {
                   {editMode ? (
                     <Tooltip title="Update Task" color={"black"}>
                       <SaveFilled
-                       style={{ fontSize: "24px", cursor: "pointer" }}
-                       onClick={() => setEditMode(!editMode)}
+                        style={{
+                          fontSize: "24px",
+                          cursor: "pointer",
+                          color: "blue",
+                        }}
+                        onClick={() => setEditMode(!editMode)}
                       />
                     </Tooltip>
                   ) : (
                     <Tooltip title="Edit Task" color={"black"}>
                       <EditFilled
-                        style={{ fontSize: "24px", cursor: "pointer" }}
+                        style={{
+                          fontSize: "24px",
+                          cursor: "pointer",
+                          color: "blue",
+                        }}
                         onClick={() => setEditMode(!editMode)}
                       />
                     </Tooltip>
@@ -197,22 +226,35 @@ export const Todo = () => {
                     style={{ fontFamily: "sans-serif" }}
                   >
                     <DeleteFilled
-                      style={{ fontSize: "24px", cursor: "pointer" }}
+                      style={{
+                        fontSize: "24px",
+                        cursor: "pointer",
+                        color: "red",
+                      }}
                       onClick={() => deleteTaskModal(id)}
                     />
                   </Tooltip>
-                  {!linethrough ? (
+                  {!taskList[0].isDone ? (
                     <Tooltip
-                      title="Task in progress"
+                      title="Set Due Date"
                       color={"black"}
                       style={{ fontFamily: "sans-serif" }}
                     >
+                      {/* <Image
+                        src={hourglass}
+                        alt=""
+                        className="w-[40%] cursor-pointer"
+                        
+                      />
+                      */}
+
                       <ClockCircleFilled
                         style={{
                           fontSize: "24px",
                           cursor: "pointer",
                           color: "",
                         }}
+                        onClick={() => setDatePickerVisible(true)}
                       />
                     </Tooltip>
                   ) : (
@@ -230,9 +272,23 @@ export const Todo = () => {
                       />
                     </Tooltip>
                   )}
-                </div>
-              </div>
-            ))}
+                  {isDatePickerVisible && (
+                    <DatePicker
+                      open={isDatePickerVisible}
+                      onOpenChange={setDatePickerVisible}
+                      onChange={(date:any) => {setSelectedDate(date)}}
+                    />
+                  )}
+                  <div className=" text-sm font-thin font-mono ">
+                                    {!taskList[0].isDone ? (
+                                        <> Due:{selectedDate ? dayjs(selectedDate).format('ddd/DD/MMM') : ''}</>
+                                    ) : (
+                                        "Completed"
+                                    )}
+                                    </div>
+                            </div>
+                        </div>
+                    ))}
             {/* </div> */}
           </section>
         </div>

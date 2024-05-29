@@ -4,11 +4,10 @@ import { Modal } from "antd";
 import { ModalTemplate } from "./Components/Modal";
 
 export default function Home() {
-  console.log('%c Is it green ?: %c  No blue', `color: green; font-size: 20px`, `color: blue; font-size: 20px`)
   return (
-    <main className="h-screen w-screen relative font-sans bg-slate-200 ">
+    <main className="h-screen w-screen relative font-sans bg-yellow-img">
       <Todo />
-      <div className="absolute bottom-4  flex justify-center w-full  font-light font-mono text-sm  ">{` @  Percy-- &&-- Jesse `}</div>
+      <div className="absolute bottom-4  flex justify-center w-full  font-light font-mono text-sm   ">{` @  Percy-- && --Jesse `}</div>
     </main>
   );
 }
